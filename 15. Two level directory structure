@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+
+struct file {
+    char name[20];
+};
+
+struct directory {
+    char name[20];
+    struct file files[10];
+    int file_count;
+};
+
+int main() {
+    struct directory directories[10];
+    int dir_count = 0, choice, dir_index;
+    char dir_name[20], filename[20];
+
+    while (1) {
+        printf("\n1. Create Directory\n2. Create File\n3. List Directories and Files\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            printf("Enter directory name: ");
+            scanf("%s", dir_name);
+            strcpy(directories[dir_count].name, dir_name);
+            directories[dir_count].file_count = 0;
+            dir_count++;
+        } else if (choice == 2) {
+            printf("Enter directory index: ");
+            scanf("%d", &dir_index);
+            if (dir_index < dir_count) {
+                printf("Enter file name: ");
+                scanf("%s", filename);
+                struct directory *dir = &directories[dir_index];
+                strcpy(dir->files[dir->file_count].name, filename);
+                dir->file_count++;
+            } else {
+                printf("Invalid directory index.\n");
+            }
+        } else if (choice == 3) {
+            for (int i = 0; i < dir_count; i++) {
+                printf("Directory %d: %s\n", i, directories[i].name);
+                for (int j = 0; j < directories[i].file_count; j++) {
+                    printf("  File: %s\n", directories[i].files[j].name);
+                }
+            }
+        } else {
+            break;
+        }
+    }
+
+    return 0;
+}
