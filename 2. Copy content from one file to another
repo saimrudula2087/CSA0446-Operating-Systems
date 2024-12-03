@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    char buffer[1024];
+    int source_fd = open("source.txt", O_RDONLY);
+    int dest_fd = open("dest.txt", O_WRONLY | O_CREAT, 0644);
+    ssize_t bytes_read;
+
+    if (source_fd < 0 || dest_fd < 0) {
+        perror("Error opening files");
+        return 1;
+    }
+
+    while ((bytes_read = read(source_fd, buffer, sizeof(buffer))) > 0) {
+        write(dest_fd, buffer, bytes_read);
+    }
+
+    close(source_fd);
+    close(dest_fd);
+    printf("File copied successfully.\n");
+    return 0;
+}
