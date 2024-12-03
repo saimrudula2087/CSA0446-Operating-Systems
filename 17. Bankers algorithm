@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    int n, m, i, j, k;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    printf("Enter number of resource types: ");
+    scanf("%d", &m);
+
+    int allocation[n][m], max[n][m], need[n][m], available[m];
+    bool finish[n];
+    int safeSequence[n], count = 0;
+
+    printf("Enter Allocation Matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            scanf("%d", &allocation[i][j]);
+        }
+    }
+
+    printf("Enter Max Matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    printf("Enter Available Resources:\n");
+    for (i = 0; i < m; i++) {
+        scanf("%d", &available[i]);
+    }
+
+    // Calculate Need Matrix
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+
+    for (i = 0; i < n; i++) finish[i] = false;
+
+    // Check for safe sequence
+    while (count < n) {
+        bool found = false;
+        for (i = 0; i < n; i++) {
+            if (!finish[i]) {
+                bool canProceed = true;
+                for (j = 0; j < m; j++) {
+                    if (need[i][j] > available[j]) {
+                        canProceed = false;
+                        break;
+                    }
+                }
+
+                if (canProceed) {
+                    for (k = 0; k < m; k++) {
+                        available[k] += allocation[i][k];
+                    }
+                    safeSequence[count++] = i;
+                    finish[i] = true;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            printf("System is in an unsafe state.\n");
+            return 0;
+        }
+    }
+
+    printf("System is in a safe state.\nSafe Sequence: ");
+    for (i = 0; i < n; i++) {
+        printf("%d ", safeSequence[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
